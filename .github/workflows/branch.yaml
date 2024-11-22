@@ -13,6 +13,9 @@ on:
         description: 'Name of the patch (e.g., ranger)'
         required: true
 
+permissions:
+  contents: write
+
 jobs:
   create-branch:
     runs-on: ubuntu-latest
