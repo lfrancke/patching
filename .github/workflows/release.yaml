@@ -1,0 +1,36 @@
+name: Bootstrap Release Branch
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Base branch to create new release branch from (e.g., release/26.0.0)'
+        required: true
+      version:
+        description: 'Which version of the product is this branch about? (e.g., 26.0.0)'
+        required: true
+      sdp-version:
+        description: 'Which SDP version is this for (e.g., 25.3)'
+        required: true
+
+jobs:
+  create-branch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.event.inputs.branch }}
+
+      - name: Create new branch
+        run: |
+          NEW_BRANCH="release/${{ github.event.inputs.sdp-version }}/${{ github.event.inputs.version }}"
+          git checkout -b "$NEW_BRANCH"
+
+      - name: Push new branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          NEW_BRANCH="release/${{ github.event.inputs.sdp-version }}/${{ github.event.inputs.version }}"
+          git push origin "$NEW_BRANCH"
